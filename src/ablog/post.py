@@ -72,11 +72,12 @@ class PostDirective(Directive):
         "tags": _split,
         "author": _split,
         "category": _split,
-        "location": _split,
-        "language": _split,
+        # "location": _split,
+        # "language": _split,
+        "meta_tags": _split,
         "redirect": _split,
         "title": lambda a: a.strip(),
-        "image": int,
+        # "image": int,
         "excerpt": int,
         "exclude": directives.flag,
         "nocomments": directives.flag,
@@ -116,8 +117,9 @@ class PostListDirective(Directive):
         "tags": _split,
         "author": _split,
         "category": _split,
-        "location": _split,
-        "language": _split,
+        # "location": _split,
+        # "language": _split,
+        "meta_tags": _split,
         "format": lambda a: a.strip(),
         "date": lambda a: a.strip(),
         "sort": directives.flag,
@@ -135,13 +137,14 @@ class PostListDirective(Directive):
         node["tags"] = self.options.get("tags", [])
         node["author"] = self.options.get("author", [])
         node["category"] = self.options.get("category", [])
-        node["location"] = self.options.get("location", [])
-        node["language"] = self.options.get("language", [])
+        # node["location"] = self.options.get("location", [])
+        # node["language"] = self.options.get("language", [])
+        node["meta_tags"] = self.options.get("meta_tags", [])
         node["format"] = self.options.get("format", "{date} - {title}")
         node["date"] = self.options.get("date", None)
         node["sort"] = "sort" in self.options
         node["excerpts"] = "excerpts" in self.options
-        node["image"] = "image" in self.options
+        # node["image"] = "image" in self.options
         node["list-style"] = self.options.get("list-style", "none")
         node["expand"] = self.options.get("expand", None)
         return [node]
@@ -228,11 +231,12 @@ def _update_post_node(node, options, arguments):
     node["tags"] = options.get("tags", [])
     node["author"] = options.get("author", [])
     node["category"] = options.get("category", [])
-    node["location"] = options.get("location", [])
-    node["language"] = options.get("language", [])
+    # node["location"] = options.get("location", [])
+    # node["language"] = options.get("language", [])
+    node["meta_tags"] = options.get("meta_tags", [])
     node["redirect"] = options.get("redirect", [])
     node["title"] = options.get("title", None)
-    node["image"] = options.get("image", None)
+    # node["image"] = options.get("image", None)
     node["excerpt"] = options.get("excerpt", None)
     node["exclude"] = "exclude" in options
     node["nocomments"] = "nocomments" in options
@@ -342,12 +346,12 @@ def process_posts(app, doctree):
             node.replace_self([])
         else:
             node.replace_self([])
-        nimg = node["image"] or blog.post_auto_image
-        if nimg:
-            for img, nod in enumerate(section.findall(nodes.image), start=1):
-                if img == nimg:
-                    excerpt.append(nod.deepcopy())
-                    break
+        # nimg = node["image"] or blog.post_auto_image
+        # if nimg:
+        #     for img, nod in enumerate(section.findall(nodes.image), start=1):
+        #         if img == nimg:
+        #             excerpt.append(nod.deepcopy())
+        #             break
         date = node["date"]
         if date:
             try:
@@ -403,11 +407,12 @@ def process_posts(app, doctree):
             "tags": node["tags"],
             "author": node["author"],
             "category": node["category"],
-            "location": node["location"],
-            "language": node["language"],
+            # "location": node["location"],
+            # "language": node["language"],
+            "meta_tags": node["meta_tags"],
             "redirect": node["redirect"],
             "nocomments": node["nocomments"],
-            "image": node["image"],
+            # "image": node["image"],
             "exclude": node["exclude"],
             "canonical_link": node["canonical_link"],
             "external_link": node["external_link"],
@@ -425,7 +430,7 @@ def process_posts(app, doctree):
                 stdlabel = env.intersphinx_inventory.setdefault("std:label", {})  # NOQA
                 baseurl = getattr(env.config, "blog_baseurl").rstrip("/") + "/"  # NOQA
                 project, version = env.config.project, str(env.config.version)  # NOQA
-        for key in ["tags", "author", "category", "location", "language"]:
+        for key in ["tags", "author", "category"]: #, "location", "language"]:
             catalog = blog.catalogs[key]
             for label in postinfo[key]:
                 coll = catalog[label]  # NOQA
@@ -444,7 +449,7 @@ def process_postlist(app, doctree, docname):
         register_posts(app)
     for node in doctree.findall(PostList):
         colls = []
-        for cat in ["tags", "author", "category", "location", "language"]:
+        for cat in ["tags", "author", "category"]:#, "location", "language"]:
             for coll in node[cat]:
                 if coll in blog.catalogs[cat].collections:
                     colls.append(blog.catalogs[cat].collections[coll])
@@ -460,7 +465,8 @@ def process_postlist(app, doctree, docname):
         if node.attributes["sort"]:
             posts.sort()  # in reverse chronological order, so no reverse=True
         fmts = list(Formatter().parse(node.attributes["format"]))
-        not_in = {"date", "title", "author", "location", "language", "category", "tags", None}
+        # not_in = {"date", "title", "author", "location", "language", "category", "tags", None}
+        not_in = {"date", "title", "author", "category", "tags", None}
         for text, key, __, __ in fmts:
             if key not in not_in:
                 raise KeyError(f"{key} is not recognized in postlist format")
@@ -573,17 +579,17 @@ def generate_archive_pages(app):
     blog_path = blog.blog_path
     for title, header, catalog in [
         (_("Authors"), _("Posts by"), blog.author),
-        (_("Locations"), _("Posts from"), blog.location),
-        (_("Languages"), _("Posts in"), blog.language),
+        # (_("Locations"), _("Posts from"), blog.location),
+        # (_("Languages"), _("Posts in"), blog.language),
         (_("Categories"), _("Posts in"), blog.category),
         (_("All posts"), _("Posted in"), blog.archive),
         (_("Tags"), _("Posts tagged"), blog.tags),
     ]:
         if not catalog:
             continue
-        context = {"parents": [], "title": title, "header": header, "catalog": catalog, "summary": True}
-        if catalog.docname not in found_docs:
-            yield (catalog.docname, context, "ablog/catalog.html")
+        # context = {"parents": [], "title": title, "header": header, "catalog": catalog, "summary": True}
+        # if catalog.docname not in found_docs:
+        #     yield (catalog.docname, context, "ablog/catalog.html")
         for collection in catalog:
             if not collection:
                 continue
@@ -599,20 +605,33 @@ def generate_archive_pages(app):
             context["feed_title"] = context["title"]
             if collection.docname not in found_docs:
                 yield (collection.docname, context, "ablog/collection.html")
-    if 1:
-        context = {
-            "parents": [],
-            "title": _("All Posts"),
-            "header": _("All"),
-            "collection": blog.posts,
-            "summary": True,
-            "atom_feed": atom_feed,
-            "feed_path": blog.blog_path,
-        }
-        docname = blog.posts.docname
-        yield (docname, context, "ablog/collection.html")
-    context = {"parents": [], "title": _("Drafts"), "collection": blog.drafts, "summary": True}
-    yield (blog.drafts.docname, context, "ablog/collection.html")
+    
+    context = {
+        "parents": [],
+        "title": _("All Posts"),
+        "header": _("All"),
+        "collection": blog.posts,
+        "summary": True,
+        "atom_feed": atom_feed,
+        "feed_path": blog.blog_path,
+    }
+    docname = blog.posts.docname
+    yield (docname, context, "ablog/collection.html")
+
+    # if 1:
+    #     context = {
+    #         "parents": [],
+    #         "title": _("All Posts"),
+    #         "header": _("All"),
+    #         "collection": blog.posts,
+    #         "summary": True,
+    #         "atom_feed": atom_feed,
+    #         "feed_path": blog.blog_path,
+    #     }
+    #     docname = blog.posts.docname
+    #     yield (docname, context, "ablog/collection.html")
+    # context = {"parents": [], "title": _("Drafts"), "collection": blog.drafts, "summary": True}
+    # yield (blog.drafts.docname, context, "ablog/collection.html")
 
 
 def generate_atom_feeds(app):
@@ -640,8 +659,8 @@ def generate_atom_feeds(app):
     if blog.blog_feed_archives:
         for header, catalog in [
             (_("Posts by"), blog.author),
-            (_("Posts from"), blog.location),
-            (_("Posts in"), blog.language),
+            # (_("Posts from"), blog.location),
+            # (_("Posts in"), blog.language),
             (_("Posts in"), blog.category),
             (_("Posted in"), blog.archive),
             (_("Posts tagged"), blog.tags),

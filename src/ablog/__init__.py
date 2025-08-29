@@ -153,7 +153,7 @@ def setup(app):
     app.connect("doctree-resolved", process_postlist)
     app.connect("missing-reference", missing_reference)
     app.connect("html-collect-pages", generate_archive_pages)
-    app.connect("html-collect-pages", generate_atom_feeds)
+    # app.connect("html-collect-pages", generate_atom_feeds)
     app.connect("html-page-context", html_page_context)
     app.add_transform(CheckFrontMatter)
     app.add_directive("update", UpdateDirective)

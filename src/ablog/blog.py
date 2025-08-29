@@ -95,28 +95,28 @@ CONFIG = [
     ("blog_authors", {}, True, require_config_full_name_link_dict()),
     ("blog_baseurl", "", True, require_config_type(str)),
     ("blog_default_author", None, True, require_config_str_or_list_lookup("blog_authors")),
-    ("blog_default_language", None, True, require_config_str_or_list_lookup("blog_languages")),
-    ("blog_default_location", None, True, require_config_str_or_list_lookup("blog_locations")),
+    # ("blog_default_language", None, True, require_config_str_or_list_lookup("blog_languages")),
+    # ("blog_default_location", None, True, require_config_str_or_list_lookup("blog_locations")),
     ("blog_feed_archives", False, True),
     ("blog_feed_fulltext", False, True),
     ("blog_feed_length", None, None),
     ("blog_feed_subtitle", None, True),
     ("blog_feed_templates", {"atom": {}}, True),
     ("blog_feed_titles", None, False),
-    ("blog_languages", {}, True, require_config_full_name_link_dict()),
-    ("blog_locations", {}, True, require_config_full_name_link_dict()),
+    # ("blog_languages", {}, True, require_config_full_name_link_dict()),
+    # ("blog_locations", {}, True, require_config_full_name_link_dict()),
     ("blog_path", "blog", True, require_config_type(str)),
     ("blog_post_pattern", [], True, require_config_type((str, list))),
     ("blog_title", "Blog", True, require_config_type(str)),
-    ("disqus_drafts", False, True),
-    ("disqus_pages", False, True),
-    ("disqus_shortname", None, True),
-    ("fontawesome_css_file", "", True, require_config_type(str)),
-    ("fontawesome_included", False, True, require_config_type(bool)),
-    ("fontawesome_link_cdn", None, True),
+    # ("disqus_drafts", False, True),
+    # ("disqus_pages", False, True),
+    # ("disqus_shortname", None, True),
+    # ("fontawesome_css_file", "", True, require_config_type(str)),
+    # ("fontawesome_included", False, True, require_config_type(bool)),
+    # ("fontawesome_link_cdn", None, True),
     ("post_always_section", False, True),
     ("post_auto_excerpt", 1, True),
-    ("post_auto_image", 0, True),
+    # ("post_auto_image", 0, True),
     ("post_auto_orphan", True, True, require_config_type(bool)),
     ("post_date_format_short", "%d %B", True, require_config_type(str)),
     ("post_date_format", "%d %B %Y", True, require_config_type(str)),
@@ -187,17 +187,22 @@ class Blog(Container):
         refs["blog-tags"] = (self.tags.docname, "Tags")
         self.author = cat["author"] = Catalog(self, "author", "author", "author")
         refs["blog-authors"] = (self.author.docname, "Authors")
-        self.location = cat["location"] = Catalog(self, "location", "location", "location")
-        refs["blog-locations"] = (self.location.docname, "Locations")
-        self.language = cat["language"] = Catalog(self, "language", "language", "language")
-        refs["blog-languages"] = (self.language.docname, "Languages")
+        # self.location = cat["location"] = Catalog(self, "location", "location", "location")
+        # refs["blog-locations"] = (self.location.docname, "Locations")
+        # self.language = cat["language"] = Catalog(self, "language", "language", "language")
+        # refs["blog-languages"] = (self.language.docname, "Languages")
         self.category = cat["category"] = Catalog(self, "category", "category", "category")
         refs["blog-categories"] = (self.category.docname, "Categories")
-        for catname in ["author", "location", "language"]:
-            catalog = self.catalogs[catname]
-            items = self.config["blog_" + catname + "s"].items()
-            for label, (name, link) in items:
-                catalog[label] = Collection(catalog, label, name, link)
+        catname = "author"
+        catalog = self.catalogs[catname]
+        items = self.config["blog_" + catname + "s"].items()
+        for label, (name, link) in items:
+            catalog[label] = Collection(catalog, label, name, link)
+        # for catname in ["author", "location", "language"]:
+        #     catalog = self.catalogs[catname]
+        #     items = self.config["blog_" + catname + "s"].items()
+        #     for label, (name, link) in items:
+        #         catalog[label] = Collection(catalog, label, name, link)
         self.posts = self.blog["post"] = Collection(self.blog, "post", "Posts", path=self.blog_path)
         self.drafts = self.blog["draft"] = Collection(
             self.blog, "draft", "Drafts", path=os_path_join(self.blog_path, "drafts")
@@ -207,12 +212,12 @@ class Blog(Container):
         refs["blog-posts"] = (self.config["blog_path"], "Posts")
         refs["blog-drafts"] = (os_path_join(self.config["blog_path"], "drafts"), "Drafts")
         refs["blog-feed"] = (os_path_join(self.config["blog_path"], "atom.xml"), self.blog_title + " Feed")
-        # set some internal configuration options
-        self.config["fontawesome"] = (
-            self.config["fontawesome_included"]
-            or self.config["fontawesome_link_cdn"]
-            or self.config["fontawesome_css_file"]
-        )
+        # # set some internal configuration options
+        # self.config["fontawesome"] = (
+        #     self.config["fontawesome_included"]
+        #     or self.config["fontawesome_link_cdn"]
+        #     or self.config["fontawesome_css_file"]
+        # )
 
     def __getattr__(self, name):
         try:
@@ -301,17 +306,17 @@ def html_builder_write_doc(self, docname, doctree, img_url=False):
     Extra argument `img_url` enables conversion of `<img>` source paths to
     fully qualified URLs based on `blog_baseurl`.
     """
-    # Source of images
-    img_folder = "_images"
-    if img_url and self.config["blog_baseurl"]:
-        img_src_path = urljoin(self.config["blog_baseurl"], img_folder)
-    else:
-        img_src_path = relative_uri(self.get_target_uri(docname), img_folder)
+    # # Source of images
+    # img_folder = "_images"
+    # if img_url and self.config["blog_baseurl"]:
+    #     img_src_path = urljoin(self.config["blog_baseurl"], img_folder)
+    # else:
+    #     img_src_path = relative_uri(self.get_target_uri(docname), img_folder)
 
     destination = StringOutput(encoding="utf-8")
     doctree.settings = self.docsettings
     self.secnumbers = {}
-    self.imgpath = img_src_path
+    # self.imgpath = img_src_path
     self.dlpath = relative_uri(self.get_target_uri(docname), "_downloads")
     self.current_docname = docname
     self.docwriter.write(doctree, destination)
@@ -346,6 +351,7 @@ class Post(BlogPageMixin):
     def __init__(self, blog, docname, info):
         self._blog = blog
         self.docname = docname
+        self.meta_tags = info["meta_tags"]
         self.section = info["section"]
         self.order = info["order"]
         self.date = date = info["date"]
@@ -365,22 +371,22 @@ class Post(BlogPageMixin):
             self.tags = info.get("tags")
             self.author = info.get("author")
             self.category = info.get("category")
-            self.location = info.get("location")
-            self.language = info.get("language")
+            # self.location = info.get("location")
+            # self.language = info.get("language")
             if not self.author and blog.blog_default_author:
                 self.author = blog.blog_default_author
-            if not self.location and blog.blog_default_location:
-                self.location = blog.blog_default_location
-            if not self.language and blog.blog_default_language:
-                self.language = blog.blog_default_language
+            # if not self.location and blog.blog_default_location:
+            #     self.location = blog.blog_default_location
+            # if not self.language and blog.blog_default_language:
+            #     self.language = blog.blog_default_language
             self.archive = self._blog.archive[self.date.year]
             self.archive.add(self)
         else:
             self.tags = info.get("tags")
             self.author = info.get("author")
             self.category = info.get("category")
-            self.location = info.get("location")
-            self.language = info.get("language")
+            # self.location = info.get("location")
+            # self.language = info.get("language")
             self.archive = []
         self.redirect = info.get("redirect")
         self.options = info

@@ -50,7 +50,7 @@ blog_baseurl = "{blog_baseurl}"
 # up project building.
 # blog_archive_titles = False
 
-# -- Blog Authors, Languages, and Locations -----------------------------------
+# -- Blog Authors --------------------------------------------------------
 
 # A dictionary of author names mapping to author full display names and
 # links. Dictionary keys are what should be used in ``post`` directive
@@ -58,24 +58,6 @@ blog_baseurl = "{blog_baseurl}"
 blog_authors = {{
     "{author}": ("{author}", None),
 }}
-
-
-# A dictionary of language code names mapping to full display names and
-# links of these languages. Similar to :confval:`blog_authors`, dictionary
-# keys should be used in ``post`` directive to refer to the locations.
-# Default is ``{{}}``.
-# blog_languages = {{
-#    'en': ('English', None),
-# }}
-
-
-# A dictionary of location names mapping to full display names and
-# links of these locations. Similar to :confval:`blog_authors`, dictionary
-# keys should be used in ``post`` directive to refer to the locations.
-# Default is ``{{}}``.
-# blog_locations = {{
-#    'Earth': ('The Blue Planet', 'https://en.wikipedia.org/wiki/Earth),
-# }}
 
 # This will prevent ablog from injecting its own templates into the Sphinx
 # build. This is only useful when you have a custom template bridge (rare).
@@ -125,8 +107,6 @@ blog_authors = {{
 # postcard.html provides information regarding the current post.
 # recentposts.html lists most recent five posts. Others provide
 # a link to a archive pages generated for each tag, category, and year.
-# In addition, there are authors.html, languages.html, and locations.html
-# sidebars that link to author and location archive pages.
 html_sidebars = {{
 '**': [ 'ablog/postcard.html', 'navigation.html',
             'ablog/recentposts.html', 'ablog/tagcloud.html',
@@ -138,7 +118,7 @@ html_sidebars = {{
 # -- Blog Feed Options --------------------------------------------------------
 
 # Turn feeds by setting :confval:`blog_baseurl` configuration variable.
-# Choose to create feeds per author, location, tag, category, and year,
+# Choose to create feeds per author, tag, category, and year,
 # default is ``False``.
 # blog_feed_archives = False
 
