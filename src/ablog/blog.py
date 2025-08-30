@@ -351,7 +351,10 @@ class Post(BlogPageMixin):
     def __init__(self, blog, docname, info):
         self._blog = blog
         self.docname = docname
-        self.meta_tags = info["meta_tags"]
+        self.description = info["description"]
+        self.keywords = info["keywords"]
+        self.image_src = info["image_src"]
+        self.image_alt = info["image_alt"]
         self.section = info["section"]
         self.order = info["order"]
         self.date = date = info["date"]

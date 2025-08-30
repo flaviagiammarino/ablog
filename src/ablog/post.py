@@ -74,7 +74,10 @@ class PostDirective(Directive):
         "category": _split,
         # "location": _split,
         # "language": _split,
-        "meta_tags": _split,
+        "description": str,
+        "keywords": str,
+        "image_src": str,
+        "image_alt": str,
         "redirect": _split,
         "title": lambda a: a.strip(),
         # "image": int,
@@ -119,7 +122,10 @@ class PostListDirective(Directive):
         "category": _split,
         # "location": _split,
         # "language": _split,
-        "meta_tags": _split,
+        "description": str,
+        "keywords": str,
+        "image_src": str,
+        "image_alt": str,
         "format": lambda a: a.strip(),
         "date": lambda a: a.strip(),
         "sort": directives.flag,
@@ -139,7 +145,10 @@ class PostListDirective(Directive):
         node["category"] = self.options.get("category", [])
         # node["location"] = self.options.get("location", [])
         # node["language"] = self.options.get("language", [])
-        node["meta_tags"] = self.options.get("meta_tags", [])
+        node["description"] = self.options.get("description", None)
+        node["keywords"] = self.options.get("keywords", None)
+        node["image_src"] = self.options.get("image_src", None)
+        node["image_alt"] = self.options.get("image_alt", None)
         node["format"] = self.options.get("format", "{date} - {title}")
         node["date"] = self.options.get("date", None)
         node["sort"] = "sort" in self.options
@@ -233,7 +242,10 @@ def _update_post_node(node, options, arguments):
     node["category"] = options.get("category", [])
     # node["location"] = options.get("location", [])
     # node["language"] = options.get("language", [])
-    node["meta_tags"] = options.get("meta_tags", [])
+    node["description"] = options.get("description", None)
+    node["keywords"] = options.get("keywords", None)
+    node["image_src"] = options.get("image_src", None)
+    node["image_alt"] = options.get("image_alt", None)
     node["redirect"] = options.get("redirect", [])
     node["title"] = options.get("title", None)
     # node["image"] = options.get("image", None)
@@ -409,7 +421,10 @@ def process_posts(app, doctree):
             "category": node["category"],
             # "location": node["location"],
             # "language": node["language"],
-            "meta_tags": node["meta_tags"],
+            "description": node["description"],
+            "keywords": node["keywords"],
+            "image_src": node["image_src"],
+            "image_alt": node["image_alt"],
             "redirect": node["redirect"],
             "nocomments": node["nocomments"],
             # "image": node["image"],
